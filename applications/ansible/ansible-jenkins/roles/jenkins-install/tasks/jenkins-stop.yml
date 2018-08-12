@@ -1,0 +1,7 @@
+---
+- name: jenkins-stop => Stop Jenkins
+  become: true
+  service:
+    name: jenkins
+    state: stopped
+  ignore_errors: yes

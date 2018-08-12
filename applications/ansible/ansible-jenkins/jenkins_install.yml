@@ -1,0 +1,7 @@
+---
+- name: Install the Jenkins server on the local machine
+  hosts: all
+  connection: local
+  tasks:
+  - include_role:
+       name: jenkins-install

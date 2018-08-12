@@ -1,0 +1,37 @@
+---
+
+- name: jenkins-configure-jobs => Job directories are present
+  become: true
+  file:
+    path: "{{ jenkins_home }}/jobs/{{ item }}"
+    state: directory
+    mode: 0777
+  with_items: "{{ jenkins_jobs }}"
+
+- name: jenkins-configure-jobs => Jobs are present
+  become: true
+  copy:
+    src: "{{ jenkins_source_dir_jobs }}/{{ item }}/config.xml"
+    dest: "{{ jenkins_home }}/jobs/{{ item }}/config.xml"
+    mode: 0777
+  with_items: "{{ jenkins_jobs }}"
+
+- include_tasks: "jenkins-get-crumb.yml"
+
+- name: jenkins-configure-jobs => Reload Jenkins if crumb is enabled
+  uri:
+    url: "{{ jenkins_url }}:{{ jenkins_port }}/reload"
+    method: POST
+    status_code: 200,302
+    headers:
+      Jenkins-Crumb: "{{ jenkins_token.content.split(':')[1] }}"
+  ignore_errors: yes
+  when: jenkins_token.status == 200
+
+- name: jenkins-configure-jobs => Reload Jenkins if crumb is disabled
+  uri:
+    url: "{{ jenkins_url }}:{{ jenkins_port }}/reload"
+    method: POST
+    status_code: 200,302
+  ignore_errors: yes
+  when: jenkins_token.status == 404

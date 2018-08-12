@@ -1,0 +1,39 @@
+---
+# Presently, this work around only partially works. I am
+# still working to resolve the existing issue. The issue
+# is that Jenkins still want you to open it up and select
+# the plugins to install.
+
+- name: jenkins-install => Create Admin User Directory
+  become: yes
+  file:
+    path: /var/lib/jenkins/users/admin
+    state: directory
+    mode: 0777
+
+- name: jenkins-install => Create Jenkins User Directory
+  become: yes
+  file:
+    path: /var/lib/jenkins/users/jenkins
+    state: directory
+    mode: 0777
+
+- name: jenkins-install => Copy Admin User
+  become: yes
+  copy:
+    src: jenkins_users/admin/config.xml
+    dest: /var/lib/jenkins/users/admin/
+    mode: 0777
+
+- name: jenkins-install => Copy Jenkins User
+  become: yes
+  copy:
+    src: jenkins_users/jenkins/config.xml
+    dest: /var/lib/jenkins/users/jenkins/
+    mode: 0777
+
+- name: jenkins-install => Remove initial admin password file
+  become: yes
+  file:
+    path: /var/lib/jenkins/secrets/initialAdminPassword
+    state: absent

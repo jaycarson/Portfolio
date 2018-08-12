@@ -1,0 +1,145 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use lib '.';
+use Euler001;
+use Euler002;
+use Euler003;
+use Euler004;
+use Euler005;
+use Euler006;
+use Euler007;
+use Euler008;
+use Euler009;
+use Euler010;
+
+use Test::More 'no_plan';
+
+sub Euler001_Test_1{
+    my $sut = Euler001->new( restrict => 10 );
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler001_Test_2{
+    my $sut = Euler001->new();
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler002_Test_1{
+    my $sut = Euler002->new();
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler003_Test_1{
+    my $sut = Euler003->new();
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler004_Test_1{
+    my $sut = Euler004->new( restrict => 2 );
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler004_Test_2{
+    my $sut = Euler004->new();
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler005_Test_1{
+    my $sut = Euler005->new( restrict => 10 );
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler005_Test_2{
+    my $sut = Euler005->new();
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler006_Test_1{
+    my $sut = Euler006->new( restrict => 10 );
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler006_Test_2{
+    my $sut = Euler006->new();
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler007_Test_1{
+    my $sut = Euler007->new( restrict => 6 );
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler007_Test_2{
+    my $sut = Euler007->new();
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler008_Test_1{
+    my $sut = Euler008->new( restrict => 4 );
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler008_Test_2{
+    my $sut = Euler008->new();
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler009_Test_1{
+    my $sut = Euler009->new( restrict => 12 );
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler009_Test_2{
+    my $sut = Euler009->new();
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler010_Test_1{
+    my $sut = Euler010->new( restrict => 10 );
+    $sut->init();
+    return $sut->run();
+}
+
+sub Euler010_Test_2{
+    my $sut = Euler010->new();
+    $sut->init();
+    return $sut->run();
+}
+
+
+is( Euler001_Test_1(), 23,           'Testing Euler001 example.');
+is( Euler001_Test_2(), 233168,       'Testing Euler001 actual.' );
+is( Euler002_Test_1(), 4613732,      'Testing Euler002 actual.' );
+is( Euler003_Test_1(), 6857,         'Testing Euler003 actual.' );
+is( Euler004_Test_1(), 9009,         'Testing Euler004 example.');
+is( Euler004_Test_2(), 906609,       'Testing Euler004 actual.' );
+is( Euler005_Test_1(), 2520,         'Testing Euler005 example.');
+is( Euler005_Test_2(), 232792560,    'Testing Euler005 actual.' );
+is( Euler006_Test_1(), 2640,         'Testing Euler006 example.');
+is( Euler006_Test_2(), 25164150,     'Testing Euler006 actual.' );
+is( Euler007_Test_1(), 13,           'Testing Euler007 example.');
+is( Euler007_Test_2(), 104743,       'Testing Euler007 actual.' );
+is( Euler008_Test_1(), 5832,         'Testing Euler008 example.');
+is( Euler008_Test_2(), 23514624000,  'Testing Euler008 actual.' );
+is( Euler009_Test_1(), 60,           'Testing Euler009 example.');
+is( Euler009_Test_2(), 31875000,     'Testing Euler009 actual.' );
+is( Euler010_Test_1(), 17,           'Testing Euler010 example.');
+is( Euler010_Test_2(), 142913828922, 'Testing Euler010 actual.' );

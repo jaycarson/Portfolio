@@ -1,0 +1,26 @@
+---
+- include_vars: secrets.yml
+
+- name: jenkins-start-seed-job => Start Jenkins
+  become: true
+  service:
+    name: jenkins
+    state: started
+
+- name: jenkins-start => Wait for Jenkins to start
+  become: false
+  uri:
+    url: "{{ jenkins_url }}:{{ jenkins_port }}"
+  register: jenkins_home_content
+  # Jenkins will return 503 
+  # (service unavailable) on the home 
+  # page while starting the "please 
+  # wait while Jenkins is getting 
+  # ready to work" page.
+  until: jenkins_home_content.status == 200
+  retries: 30
+  delay: 5
+
+- name: jenkins-start-seed-job => kick off seed job
+  become: false
+  command: "curl -X POST -u {{ jenkins_admin_login }}:{{ jenkins_admin_password }} {{ jenkins_url }}:{{ jenkins_port }}/job/{{ jenkins_seed_job }}/build"

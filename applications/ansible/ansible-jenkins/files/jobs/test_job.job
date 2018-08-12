@@ -1,0 +1,26 @@
+job('Branches/{{BRANCH}}/test-job') {
+    scm {
+        git {
+            remote {
+                url({{REPOSITORY}})
+            }
+        branch('{{BRANCH}}')
+        }
+    }
+    triggers{
+        scm('*/15 * * * *')
+    }
+    steps{
+        shell('cd test; ./run_tests')
+    }
+    publishers{
+        cobertura('**/test/coverage.xml'){
+            failNoReports(true)
+            sourceEncoding('ASCII')
+            methodTarget(80, 0, 0)
+            lineTarget(80, 0, 0)
+            conditionalTarget(80, 0, 0)
+        }
+        archiveJunit('**/test/*.xml')
+    }
+}

@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+
+sudo dnf -y install python
+sudo pip install ansible
+sudo dnf -y install libselinux-python
+sudo dnf -y install python-firewall

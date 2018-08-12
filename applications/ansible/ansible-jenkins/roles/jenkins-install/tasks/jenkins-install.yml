@@ -1,0 +1,56 @@
+---
+
+- include: "jenkins-stop.yml"
+
+- name: jenkins-install => Create Jenkins group
+  become: true
+  group:
+    name: "{{ jenkins_config_group }}"
+    state: present
+
+- name: jenkins-install => Create Jenkins user
+  become: true
+  user: 
+    name: "{{ jenkins_config_owner }}"
+    groups: "{{ jenkins_config_group }}"
+    state: present
+
+- name: jenkins-install => Install Java and GIT
+  become: true
+  dnf: name={{item}} state=installed
+  with_items:
+    - java
+    - git
+
+#- include: "jenkins-java-install.yml"
+
+- name: jenkins-install => Download the Jenkins repo yum URL
+  get_url:
+    url: "{{jenkins.repo_URL}}"
+    dest: /etc/yum.repos.d/jenkins.repo
+  become: true
+
+- name: jenkins-install => Import GPG Key
+  become: true
+  rpm_key:
+    state: present
+    key: "{{jenkins.gpg_key}}"
+
+- name: jenkins-install => Install Jenkins
+  become: true
+  dnf:
+    name: jenkins
+    state: present
+
+- include: "jenkins-run-no-wizard.yml"
+#- include: "jenkins-run-no-wizard-work-around.yml"
+
+- debug:
+    msg: "If this is your first time running this playbook, Jenkins will not successfully start due to it requiring that the user put in the first time admin password. Go to /var/lib/jenkins/secrets/initialAdminPassword and paste it into the browser at localhost:8080. This is a known bug in the playbook that will be resolved when the run without wizard option has been fixed by jenkins."
+
+- name: jenkins-install => Start Jenkins service and enable on boot
+  become: true
+  service:
+    name: jenkins
+    state: started
+    enabled: yes

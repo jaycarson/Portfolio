@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" 
+              rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" 
+              crossorigin="anonymous"
+        >
+    <title>Simple Docker Example Using Nginx</title>
+    <style>
+        h1 {
+            margin-left: 10px;
+        } 
+        h2 {
+            margin-left: 10px;
+        }
+        p {
+            margin-left: 20px;
+        }
+    </style>
+    </head>
+    <body>
+    <div>
+        <h1>Simple Docker Example Using Nginx</h1>
+
+        <h2>Purpose:</h2>
+
+            <p>To deploy an image and allocate a specific amount of RAM.</p>
+    
+        <h2>Dockerfile:</h2>
+            <p>No Dockerfile required. The docker-compose.yml file below deploys the Nginx server
+               and restricts the amount of RAM accessible to the container to 60MB.</p>
+    
+        <h2>docker-compose.yml</h2>
+            <p>
+            version: '2.1'<br>
+
+            services:<br>
+            &nbsp;&nbsp;  my_web_server:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;   image: nginx<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;   mem_limit: 60m<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;   restart: always<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;   ports:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     - "80:80"<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;   volumes:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   - ./html:/usr/share/nginx/html<br>
+            </p>
+
+        <h2>Commands</h2>
+        
+        <ul>
+            <li><b>Deploy Container:</b> sudo docker-compose up</li>
+            <ul>
+                <li>Optionally: You can run it in the background using "sudo docker-compose up &amp;"
+            </ul>
+            <li><b>Un-Deploy Container:</b> sudo docker-compose down</li>
+        </ul>
+
+        <h2>Explanation</h2>
+
+            <p>docker-compose can be a great tool to rapidly deploy simple images. In the above example
+               only a base image of Nginx is required. An HTML file was written for Nginx to serve. The
+               docker-compose.yml file allocated a specific amount of RAM to be accessible, opened up
+               the 80 port, and used the contents in ./html to populate Nginx's /usr/share/nginx/html.</p>
+
+            <p>Version 2.1 of docker-compose was used so that I could allocate the RAM for a single
+                image. If I were to instead move this into a cluster, then I would advance the version
+                to version 3 and update the docker-compose file to manage a cluster of replicas.</p>
+
+    </div>
+    </body>
+</html>

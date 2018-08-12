@@ -1,0 +1,18 @@
+---
+# defaults file for jenkins-build-jobs
+#jenkins_admin_login: jay
+#jenkins_admin_password: password
+
+
+# ============================== #
+# Environment Variables          #
+# ============================== #
+# jenkins_url:  The IP Address of the Jenkins Server
+# jenkins_port: The port that Jenkins will listen on
+# jenkins_home: The directory on the server where the Jenkins configs will live
+# jenkins_admin The admininstrator email address for the Jenkins server
+jenkins_url: "http://127.0.0.1"
+jenkins_port: "8080"
+jenkins_home: /var/lib/jenkins
+jenkins_admin: "admin@example.com"
+jenkins_seed_job: "seed_job"

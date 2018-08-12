@@ -1,0 +1,4 @@
+---
+# tasks file for jenkins-build-jobs
+
+- include: "jenkins-start-seed-job.yml"

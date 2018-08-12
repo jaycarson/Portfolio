@@ -1,0 +1,11 @@
+version: '2.1'
+
+services:
+  my_web_server:
+    image: nginx
+    mem_limit: 60m
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./html:/usr/share/nginx/html

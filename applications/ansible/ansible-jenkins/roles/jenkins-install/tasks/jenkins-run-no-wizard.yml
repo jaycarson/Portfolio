@@ -1,0 +1,16 @@
+---
+
+# Presently bypassing the initial security section of Jenkins
+# does not work. This step was to resolve it so that the
+# installation could continue, but it is not yet resolved.
+# For now when the playbook fails, go to the 127.0.0.1:8080
+# and complete the installation. Then, return to the playbook
+# and just run it again.
+- name: jenkins-install => Change Jenkins JAVA options
+  become: true
+  lineinfile:
+    create: yes
+    dest: /etc/default/jenkins
+    regexp: ^JENKINS_JAVA_OPTIONS=
+    line: JENKINS_JAVA_OPTIONS= "{{ jenkins.JAVA_OPTIONS }}"
+    state: present

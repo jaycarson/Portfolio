@@ -1,0 +1,17 @@
+---
+# tasks file for ansible-jenkins
+
+- include: "jenkins-install.yml"
+
+# Jenkins should not be running while we change the configuration
+# data, otherwise some files might be overwritten when it restarts
+- include: "jenkins-stop.yml"
+- include: "jenkins-configure.yml"
+
+- include: "jenkins-start.yml"
+- include: "jenkins-set-quiet-mode.yml"
+- include: "jenkins-configure-plugins.yml"
+
+- include: "jenkins-configure-jobs.yml"
+- include: "jenkins-cancel-quiet-mode.yml"
+#- include: "{{ jenkins_after_config_jobs_file | default('empty.yml') }}"
