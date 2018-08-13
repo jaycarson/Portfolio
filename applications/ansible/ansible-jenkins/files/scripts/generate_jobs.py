@@ -17,8 +17,11 @@ class GenerateJobs(object):
     def __init__(self):
         to_roles = './applications/ansible/ansible-jenkins/roles/'
         to_config = 'jenkins-build-jobs/files/config.yml'
+        full_path = to_roles + to_config
 
-        self._configs = yaml.load(to_roles + to_config)
+        self._configs = yaml.load(full_path)
+
+        print self._configs
 
         self._debugging = self._configs['debugging']
         
