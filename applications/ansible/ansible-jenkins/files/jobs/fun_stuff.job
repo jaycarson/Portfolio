@@ -2,7 +2,7 @@ job('Branches/{{BRANCH}}/fun-stuff'){
     scm {
         git {
             remote {
-                url({{REPOSITORY}})
+                url({{JENKINS_CONFIG}})
             }
         branch('{{BRANCH}}')
         }
