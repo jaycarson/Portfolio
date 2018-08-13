@@ -54,8 +54,11 @@ class GenerateJobs(object):
         return repo_name.split('.')[0]
 
     def clone_repo(self, repo):
-        output = subprocess.check_output(['git', 'clone', repo])
-        print output
+        try:
+            output = subprocess.check_output(['git', 'clone', repo])
+            print output
+        except:
+            pass
 
     def get_branches_from_repository(self, repo):
         chdir('./' + repo)
