@@ -4,7 +4,7 @@ import argparse
 import subprocess
 import re
 import yaml
-from os import listdir, chdir
+from os import listdir, chdir, getcwd
 from os.path import isfile, join
 
 
@@ -15,6 +15,8 @@ class GenerateJobs(object):
     which is then read by Jenkins during the seed_job job.
     """
     def __init__(self):
+        self._root_dir = getcwd()
+
         to_roles = './applications/ansible/ansible-jenkins/roles/'
         to_config = 'jenkins-build-jobs/files/config.yml'
         full_path = to_roles + to_config
@@ -82,7 +84,7 @@ class GenerateJobs(object):
 
         self.checkout_branch('master')
 
-        chdir('..')
+        chdir(self._root_dir)
 
     def find_all_job_files(self):
         for job_file in listdir(self._path_to_jobs):
