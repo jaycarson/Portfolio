@@ -175,8 +175,6 @@ class GenerateJobs(object):
             print self._dsl_content
             print "=============================="
 
-        print self._root_dir
-
         with open(self._dsl_location, 'w') as file_handle:
             file_handle.write(self._dsl_content)
 

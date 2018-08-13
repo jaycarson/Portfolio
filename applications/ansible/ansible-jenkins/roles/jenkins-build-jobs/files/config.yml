@@ -1,5 +1,5 @@
 path_to_jobs: './applications/ansible/ansible-jenkins/files/jobs/'
-path_to_dsl: './applications/ansible/ansible-jenkins/files/jobs/scripts/dsl.groovy'
+path_to_dsl: './applications/ansible/ansible-jenkins/files/scripts/dsl.groovy'
 debugging: True
 repositories:
   jenkins_config: 'https://github.com/jaycarson/Portfolio.git'
