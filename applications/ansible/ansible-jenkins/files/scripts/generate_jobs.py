@@ -19,9 +19,7 @@ class GenerateJobs(object):
         to_config = 'jenkins-build-jobs/files/config.yml'
         full_path = to_roles + to_config
 
-        self._configs = yaml.load(full_path)
-
-        print self._configs
+        self._configs = yaml.load(open(full_path))
 
         self._debugging = self._configs['debugging']
         
