@@ -4,7 +4,7 @@ import argparse
 import subprocess
 import re
 import yaml
-from os import listdir
+from os import listdir, chdir
 from os.path import isfile, join
 
 
@@ -58,7 +58,7 @@ class GenerateJobs(object):
         print output
 
     def get_branches_from_repository(self, repo):
-        os.chdir('./' + repo)
+        chdir('./' + repo)
         branches = subprocess.check_output(['git', 'branch', '-a']).split("\n")
         for branch in branches:
             clean_branch = re.sub(r'^\s*\**\s*', "", branch).strip()
@@ -79,7 +79,7 @@ class GenerateJobs(object):
 
         self.checkout_branch('master')
 
-        os.chdir('..')
+        chdir('..')
 
     def find_all_job_files(self):
         for job_file in listdir(self._path_to_jobs):
