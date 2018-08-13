@@ -45,7 +45,7 @@ class GenerateJobs(object):
             else:
                 repo_path = self._configs['repositories'][repo]
                 repo_name = self.get_repo_name(repo_path)
-                self.clone_repo(repo_name)
+                self.clone_repo(repo_path)
                 self.get_branches_from_repository(repo_name)
 
     def get_repo_name(self, repo_path):
