@@ -3,6 +3,7 @@
 import argparse
 import subprocess
 import re
+import yaml
 from os import listdir
 from os.path import isfile, join
 
@@ -14,16 +15,19 @@ class GenerateJobs(object):
     which is then read by Jenkins during the seed_job job.
     """
     def __init__(self):
-        self._debugging = True
+        to_roles = './applications/ansible/ansible-jenkins/roles/'
+        to_config = 'jenkins-build-jobs/files/config.yml'
 
-        path_to_files = './applications/ansible/ansible-jenkins/files/'
-        self._path_to_jobs = path_to_files + 'jobs/'
-        self._repository = 'https://github.com/jaycarson/Portfolio.git'
+        self._configs = yaml.load(to_roles + to_config)
+
+        self._debugging = self._configs['debugging']
+        
+        self._path_to_jobs = self._configs['path_to_jobs']
        
         self._jobs = []
         self._branches = []
         
-        self._dsl_location = path_to_files + "scripts/dsl.groovy"
+        self._dsl_location = self._configs['path_to_dsl']
         self._dsl_content = ''
 
     def __call__(self):
@@ -34,6 +38,26 @@ class GenerateJobs(object):
         self.write_dsl_groovy_file()
 
     def find_all_branches(self):
+        for repo in self._configs['repositories'].keys():
+            if repo == 'jenkins_config':
+                continue
+            else:
+                repo_path = self._configs['repositories'][repo]
+                repo_name = self.get_repo_name(repo_path)
+                self.clone_repo(repo_name)
+                self.get_branches_from_repository(repo_name)
+
+    def get_repo_name(self, repo_path):
+        repo_path_pieces = repo_path.split('/')
+        repo_name = repo_path_pieces[-1]
+        return repo_name.split('.')[0]
+
+    def clone_repo(self, repo):
+        output = subprocess.check_output(['git', 'clone', repo])
+        print output
+
+    def get_branches_from_repository(self, repo):
+        os.chdir('./' + repo)
         branches = subprocess.check_output(['git', 'branch', '-a']).split("\n")
         for branch in branches:
             clean_branch = re.sub(r'^\s*\**\s*', "", branch).strip()
@@ -53,6 +77,8 @@ class GenerateJobs(object):
             self.add_branch_folder(branch)
 
         self.checkout_branch('master')
+
+        os.chdir('..')
 
     def find_all_job_files(self):
         for job_file in listdir(self._path_to_jobs):
@@ -93,9 +119,15 @@ class GenerateJobs(object):
         return 1
 
     def parse_line(self, newline, branch):
-        repository = "'" + self._repository + "'"
-
-        newline = newline.replace('{{REPOSITORY}}', repository)
+        for repository in self._configs['repositories'].keys():
+            flag = '{{' + repository.upper() + '}}'
+            value = self._configs['repositories'][repository]
+            newline = newline.replace(flag, value)
+        
+        for replacer in self._configs['job_replacements'].keys():
+            flag = '{{' + replacer.upper() + '}}'
+            value = self._configs['job_replacements'][replacer]
+            newline = newline.replace(flag, value)
         
         if newline.startswith('job('):
             newline = newline.replace('{{BRANCH}}', branch.replace('/', '-'))

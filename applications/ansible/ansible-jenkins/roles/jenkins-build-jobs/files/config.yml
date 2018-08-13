@@ -1,0 +1,8 @@
+path_to_jobs: './applications/ansible/ansible-jenkins/files/jobs/'
+path_to_dsl: './applications/ansible/ansible-jenkins/files/jobs/scripts/dsl.groovy'
+debuggin: True
+repositories:
+  jenkins_config: 'https://github.com/jaycarson/Portfolio.git'
+  code: 'https://github.com/jaycarson/fun.git'
+job_replacements:
+  stand_in: 'Something'
