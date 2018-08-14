@@ -11,7 +11,7 @@ repositories:
         replacements:
           - Root_Path:
             replace: '{{PATH}}'
-            with: 'scripting_languages/Python_2_7/Eulers')
+            with: 'scripting_languages/Python_2_7/Eulers'
   code:
     location: 'https://github.com/jaycarson/fun.git'
     jobs:
