@@ -42,10 +42,10 @@ class GenerateJobs(object):
         repositories = self._configs['repositories']
 
         for repository in repositories.keys():
-            self.process_repository(repository)
+            self.process_repository(repositories[repository])
 
     def process_repository(self, repo):
-        if 'jobs' in repo.keys():
+        if 'jobs' in repo:
             jobs = repo['jobs']
         else:
             print "Warning: There are not jobs in:"
