@@ -10,20 +10,20 @@ repositories:
           - 'master'
         replacements:
           - Root_Path:
-              replace: '{{PATH}}'
-              with: 'scripting_languages/Python_2_7/Eulers')
+            replace: '{{PATH}}'
+            with: 'scripting_languages/Python_2_7/Eulers'
   code:
     location: 'https://github.com/jaycarson/fun.git'
     jobs:
       - location: ''
         branches:
-          - 'master'
-          - '^DEV'  # REGEX
+        - 'master'
+        - '^DEV'  # REGEX
     jenkins_config_jobs:
       - location: ''
         branches:
-          - 'master'
+        - 'master'
 job_replacements:
   - Description:
-      - replace: '{{Something}}'
-      - with: 'Something Else'
+    - replace: '{{Something}}'
+    - with: 'Something Else'
