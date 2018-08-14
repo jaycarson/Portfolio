@@ -25,11 +25,8 @@ class GenerateJobs(object):
 
         self._debugging = self._configs['Global']['debugging']
 
-        self._path_to_jobs = self._configs['path_to_jobs']
-
         self._branch_folders = []
 
-        self._jobs = []
         self._branches = []
 
         self._dsl_location = self._configs['Global']['path_to_dsl']
