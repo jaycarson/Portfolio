@@ -128,12 +128,15 @@ class GenerateJobs(object):
         if repo_branch not in self._branch_folders:
             self._branch_folders.append(repo_branch)
 
-    def find_all_branches(self):
+    def find_all_branches(self, repo):
+        chdir('./' + repo)
+        # TODO: Fix this to go into the repo and get the branches.
         for repo in self._configs['repositories'].keys():
             repo_path = self._configs['repositories'][repo]['location']
             repo_name = self.get_repo_name(repo_path)
             self.clone_repo(repo_path)
             self.get_branches_from_repository(repo_name)
+        chdir(self._root_dir)
 
     def get_repo_name(self, repo_path):
         repo_path_pieces = repo_path.split('/')
