@@ -1,4 +1,10 @@
+#!/usr/bin/bash
+
 bash code_check.sh
 
-python euler.tests
+python -m xmlrunner test || true
+
+coverage run euler.tests || true
+coverage xml
+
 rm *.pyc
