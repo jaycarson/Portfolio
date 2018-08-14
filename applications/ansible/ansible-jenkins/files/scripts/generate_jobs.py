@@ -57,7 +57,7 @@ class GenerateJobs(object):
         else:
             repo_path = None
 
-        repo_name = self.get_repo_name(location)
+        repo_name = self.get_repo_name(repo_path)
 
         self.clone_repo(repo_path)
 
