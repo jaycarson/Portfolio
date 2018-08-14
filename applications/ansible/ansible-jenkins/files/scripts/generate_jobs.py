@@ -238,6 +238,12 @@ class GenerateJobs(object):
 
         self.add_dsl_folder_content(dsl_content)
 
+    def add_dsl_repo_content(self, content):
+        self._dsl_repo_content += content + "\n"
+
+    def add_dsl_folder_content(self, content):
+        self._dsl_folder_content += content + "\n"
+
     def add_dsl_content(self, content):
         self._dsl_content += content + "\n"
 
