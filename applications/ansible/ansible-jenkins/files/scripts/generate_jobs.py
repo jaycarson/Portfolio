@@ -48,7 +48,7 @@ class GenerateJobs(object):
             self.process_repository(repository)
 
     def process_repository(self, repo):
-        if 'jobs' in repo:
+        if 'jobs' in repo.keys():
             jobs = repo['jobs']
         else:
             print "Warning: There are not jobs in:"
