@@ -191,7 +191,7 @@ class GenerateJobs(object):
                     processed_branches.append(branch)
 
     def process_pipeline_branch(self, branch, pipeline_path, repo_name):
-        self.parse_pipeline_file_for_branch(self, branch, pipeline_path, repo_name)
+        self.parse_pipeline_file_for_branch(branch, pipeline_path, repo_name)
 
         repo_branch = (repo_name, branch)
 
