@@ -138,7 +138,7 @@ class GenerateJobs(object):
             self._branch_folders.append(repo_branch)
 
     def process_pipelines(self, pipelines, all_branches, repo_name):
-        for job in jobs:
+        for job in pipelines:
             self.process_pipeline(job, all_branches, repo_name)
     
     def process_pipeline(self, pipeline, all_branches, repo_name):
