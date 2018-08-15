@@ -287,7 +287,7 @@ class GenerateJobs(object):
             value = "'" + self._configs['repositories'][repository]['location'] + "'"
             newline = newline.replace(flag, value)
 
-        for replacer in self._configs['job_replacements'].keys():
+        for replacer in self._configs['job_replacements']:
             flag = replacer['replace']
             value = replacer['with']
             newline = newline.replace(flag, value)
