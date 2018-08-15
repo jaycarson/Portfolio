@@ -284,7 +284,7 @@ class GenerateJobs(object):
     def parse_line(self, newline, branch, repo_name):
         for repository in self._configs['repositories'].keys():
             flag = '{{' + repository.upper() + '}}'
-            value = "'" + self._configs['repositories'][repository] + "'"
+            value = "'" + self._configs['repositories'][repository]['location'] + "'"
             newline = newline.replace(flag, value)
 
         for replacer in self._configs['job_replacements'].keys():
