@@ -78,7 +78,7 @@ class GenerateJobs(object):
 
     def process_jobs(self, jobs, all_branches, repo_name):
         for job in jobs:
-            process_job(job, all_branches, repo_name)
+            self.process_job(job, all_branches, repo_name)
 
     def process_job(self, job, all_branches, repo_name):
         if 'location' in job:
