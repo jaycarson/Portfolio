@@ -50,7 +50,12 @@ class GenerateJobs(object):
         else:
             print "Warning: There are not jobs in:"
             print repo
-            return
+            jobs = None
+            
+            if 'pipelines' in repo:
+                print "Warning: Pipeline in repo with no branches"
+            else:
+                return
 
         if 'location' in repo:
             repo_path = repo['location']
@@ -63,9 +68,13 @@ class GenerateJobs(object):
 
         self.add_branches_folder(repo_name)
 
-        all_branches = self.find_all_branches(repo_name)
+        all_branches = self.find_all_branches(repo_path, repo_name)
 
-        self.process_jobs(repo['jobs'], all_branches, repo_name)
+        if 'jobs' in repo:
+            self.process_jobs(repo['jobs'], all_branches, repo_name)
+
+        if 'pipelines' in repo:
+            self.process_pipelines(repo['pipelines'], all_branches, repo_name)
 
     def process_jobs(self, jobs, all_branches, repo_name):
         for job in jobs:
@@ -116,7 +125,7 @@ class GenerateJobs(object):
             for branch in all_branches:
                 if branch in processed_branches:
                     continue
-                if re.search(branch_patter, branch) is not None:
+                if re.search(branch_pattern, branch) is not None:
                     process_job_branch(branch, job_path, repo_name)
                     processed_branches.append(branch)
 
@@ -128,15 +137,70 @@ class GenerateJobs(object):
         if repo_branch not in self._branch_folders:
             self._branch_folders.append(repo_branch)
 
-    def find_all_branches(self, repo):
-        chdir('./' + repo)
-        # TODO: Fix this to go into the repo and get the branches.
-        for repo in self._configs['repositories'].keys():
-            repo_path = self._configs['repositories'][repo]['location']
-            repo_name = self.get_repo_name(repo_path)
-            self.clone_repo(repo_path)
-            self.get_branches_from_repository(repo_name)
-        chdir(self._root_dir)
+    def process_pipelines(self, pipelines, all_branches, repo_name):
+        for job in jobs:
+            process_pipeline(job, all_branches, repo_name)
+    
+    def process_pipeline(self, pipeline, all_branches, repo_name):
+        if 'location' in pipeline:
+            location_path = pipeline['location']
+            if location_path.startswith('./'):
+                location_path.replace(',/', '')
+            pipeline_path = './' + repo_name + '/' + pipeline['location']
+
+            if not isfile(pipeline_path):
+                print "Warning: Invalid pipeline path: " + pipeline_path
+                return
+        else:
+            print "Warning: There is no path to the pipeline:"
+            print pipeline
+            return
+
+        if 'branches' in pipeline:
+            if 'all' in pipeline['branches']:
+                self.process_pipeline_branches(
+                        all_branches,
+                        pipeline_path,
+                        all_branches,
+                        repo_name,
+                    )
+            else:
+                self.process_pipeline_branches(
+                        pipeline['branches'],
+                        pipeline_path,
+                        all_branches,
+                        repo_name,
+                    )
+        else:
+            self.process_pipeline_branches(
+                    all_branches,
+                    pipeline_path,
+                    all_branches,
+                    repo_name,
+                )
+
+    def process_pipeline_branches(self, branches, pipeline_path, all_branches, repo_name):
+        processed_branches = []
+
+        for branch_pattern in branches:
+            for branch in all_branches:
+                if branch in processed_branches:
+                    continue
+                if re.search(branch_pattern, branch) is not None:
+                    process_pipeline_branch(branch, pipeline_path, repo_name)
+                    processed_branches.append(branch)
+
+    def process_pipeline_branch(self, branch, pipeline_path, repo_name):
+        self.parse_pipeline_file_for_branch(self, branch, pipeline_path, repo_name)
+
+        repo_branch = (repo_name, branch)
+
+        if repo_branch not in self._branch_folders:
+            self._branch_folders.append(repo_branch)
+
+    def find_all_branches(self, repo_path, repo_name):
+        self.clone_repo(repo_path)
+        return self.get_branches_from_repository(repo_name)
 
     def get_repo_name(self, repo_path):
         repo_path_pieces = repo_path.split('/')
@@ -150,8 +214,11 @@ class GenerateJobs(object):
         except:
             pass
 
-    def get_branches_from_repository(self, repo):
-        chdir('./' + repo)
+    def get_branches_from_repository(self, repo_name):
+        chdir('./' + repo_name)
+
+        branch_list = []
+
         branches = subprocess.check_output(['git', 'branch', '-a']).split("\n")
         for branch in branches:
             clean_branch = re.sub(r'^\s*\**\s*', "", branch).strip()
@@ -160,19 +227,21 @@ class GenerateJobs(object):
                 clean_branch not in self._branches and
                 ' -> ' not in clean_branch
                 ):
-                self._branches.append(clean_branch)
+                branch_list.append(clean_branch)
 
         if self._debugging > 0:
             print "========== Branches ================"
-            print self._branches
+            print branch_list
 
-        for branch in self._branches:
+        for branch in branch_list:
             self.checkout_branch(branch)
             self.add_branch_folder(branch)
 
         self.checkout_branch('master')
-
+        
         chdir(self._root_dir)
+
+        return branch_list
 
     def parse_job_file_for_branch(self, branch, job_path, repo_name):
         location = job_path
@@ -195,6 +264,19 @@ class GenerateJobs(object):
                     dsl_content += self.parse_line(line, branch, repo_name)
 
             self.add_dsl_content(dsl_content)
+
+    def parse_pipeline_file_for_branch(self, branch, pipeline_path, repo_name):
+        location = pipeline_path
+
+        with open(location, 'r') as file_handle:
+            pipeline_file = file_handle.readlines()
+            pipeline_content = ''
+
+            for line in pipeline_file:
+                pipeline_content += self.parse_line(line, branch, repo_name)
+
+        # TODO: Create job directory for pipeline job
+        # TODO: Paste pipeline job's XML content into the config.xml file in the directory
 
     def parse_header(self, line):
         return 1

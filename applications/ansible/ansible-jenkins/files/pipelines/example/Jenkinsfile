@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    triggers {
+        pollSCM('H * * * *')
+    }
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Nothing to build because this will run scripts.'
+                echo 'This is an example of going somewhere and then'
+                echo 'doing something.'
+
+                dir('some/path/to/it') {
+                    sh 'pwd'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                parallel(
+                    python_2_7: {
+                        build job: ''
+                    },
+                    python_3: {
+                        build job: ''
+                    },
+                    groovy: {
+                        build job: ''
+                    }
+                    perl: {
+                        build job: ''
+                    }
+                )
+            }
+        }
+        stage('Deploy'){
+            steps {
+                echo 'Nothing to deploy.'
+            }
+        }
+    }
+}
