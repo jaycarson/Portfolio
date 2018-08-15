@@ -127,7 +127,7 @@ class GenerateJobs(object):
                     continue
                 if re.search(branch_pattern, branch) is not None:
                     self.process_job_branch(branch, job_path, repo_name)
-                    self.processed_branches.append(branch)
+                    processed_branches.append(branch)
 
     def process_job_branch(self, branch, job_path, repo_name):
         self.parse_job_file_for_branch(branch, job_path, repo_name)
@@ -188,7 +188,7 @@ class GenerateJobs(object):
                     continue
                 if re.search(branch_pattern, branch) is not None:
                     self.process_pipeline_branch(branch, pipeline_path, repo_name)
-                    self.processed_branches.append(branch)
+                    processed_branches.append(branch)
 
     def process_pipeline_branch(self, branch, pipeline_path, repo_name):
         self.parse_pipeline_file_for_branch(self, branch, pipeline_path, repo_name)
