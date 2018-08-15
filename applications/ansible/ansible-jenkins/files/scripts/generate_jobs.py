@@ -130,7 +130,7 @@ class GenerateJobs(object):
                     self.processed_branches.append(branch)
 
     def process_job_branch(self, branch, job_path, repo_name):
-        self.parse_job_file_for_branch(self, branch, job_path, repo_name)
+        self.parse_job_file_for_branch(branch, job_path, repo_name)
 
         repo_branch = (repo_name, branch)
 
