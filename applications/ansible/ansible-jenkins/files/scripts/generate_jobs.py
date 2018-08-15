@@ -126,8 +126,8 @@ class GenerateJobs(object):
                 if branch in processed_branches:
                     continue
                 if re.search(branch_pattern, branch) is not None:
-                    process_job_branch(branch, job_path, repo_name)
-                    processed_branches.append(branch)
+                    self.process_job_branch(branch, job_path, repo_name)
+                    self.processed_branches.append(branch)
 
     def process_job_branch(self, branch, job_path, repo_name):
         self.parse_job_file_for_branch(self, branch, job_path, repo_name)
@@ -139,7 +139,7 @@ class GenerateJobs(object):
 
     def process_pipelines(self, pipelines, all_branches, repo_name):
         for job in jobs:
-            process_pipeline(job, all_branches, repo_name)
+            self.process_pipeline(job, all_branches, repo_name)
     
     def process_pipeline(self, pipeline, all_branches, repo_name):
         if 'location' in pipeline:
@@ -187,8 +187,8 @@ class GenerateJobs(object):
                 if branch in processed_branches:
                     continue
                 if re.search(branch_pattern, branch) is not None:
-                    process_pipeline_branch(branch, pipeline_path, repo_name)
-                    processed_branches.append(branch)
+                    self.process_pipeline_branch(branch, pipeline_path, repo_name)
+                    self.processed_branches.append(branch)
 
     def process_pipeline_branch(self, branch, pipeline_path, repo_name):
         self.parse_pipeline_file_for_branch(self, branch, pipeline_path, repo_name)
