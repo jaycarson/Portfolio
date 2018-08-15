@@ -235,7 +235,7 @@ class GenerateJobs(object):
 
         for branch in branch_list:
             self.checkout_branch(branch)
-            self.add_branch_folder(branch)
+            self.add_branch_folder(repo_name, branch)
 
         self.checkout_branch('master')
         
