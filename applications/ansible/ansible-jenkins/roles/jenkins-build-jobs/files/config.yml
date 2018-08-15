@@ -9,7 +9,7 @@ repositories:
         branches:
           - 'master'
         replacements:
-          - Root_Path:
+          - Description: 'Root Path'
             replace: '{{PATH}}'
             with: 'scripting_languages/Python_2_7/Eulers'
     pipelines:
@@ -29,5 +29,5 @@ repositories:
         - 'master'
 job_replacements:
   - Description:
-    - replace: '{{Something}}'
-    - with: 'Something Else'
+    replace: '{{Something}}'
+    with: 'Something Else'
