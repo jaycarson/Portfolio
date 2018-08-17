@@ -1,6 +1,7 @@
 Global:
   debugging: 1
   path_to_dsl: './applications/ansible/ansible-jenkins/files/scripts/dsl.groovy'
+  path_jenkins: '/var/libs/jenkins/'
 repositories:
   jenkins_config:
     location: 'https://github.com/jaycarson/Portfolio.git'
@@ -13,7 +14,9 @@ repositories:
             replace: '{{PATH}}'
             with: 'scripting_languages/Python_2_7/Eulers'
     pipelines:
-      - location: './applications/ansible/ansible-jenkins/files/pipelines/example/Jenkinsfile'
+      - pipelinefile: './applications/ansible/ansible-jenkins/files/pipelines/example/config.xml'
+        jenkinsfile: './applications/ansible/ansible-jenkins/files/pipelines/example/Jenkinsfile'
+        name: 'test-pipeline'
         branches:
           - 'master'
   code:
