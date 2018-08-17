@@ -1,7 +1,7 @@
 Global:
   debugging: 1
   path_to_dsl: './applications/ansible/ansible-jenkins/files/scripts/dsl.groovy'
-  path_jenkins: '/var/lib/jenkins/'
+  path_jenkins: '/var/lib/jenkins'
 repositories:
   jenkins_config:
     location: 'https://github.com/jaycarson/Portfolio.git'
