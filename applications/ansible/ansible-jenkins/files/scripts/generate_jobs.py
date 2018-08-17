@@ -4,8 +4,8 @@ import argparse
 import subprocess
 import re
 import yaml
-from os import listdir, chdir, getcwd
-from os.path import isfile, join
+from os import listdir, chdir, getcwd, mkdir
+from os.path import isfile, join, isdir
 
 
 class GenerateJobs(object):
@@ -33,6 +33,8 @@ class GenerateJobs(object):
         self._dsl_content = ''
         self._dsl_repo_content = ''
         self._dsl_folder_content = ''
+        
+        self._jenkins_location = self._configs['Global']['path_jenkins']
 
     def __call__(self):
         self.process_repositories()
@@ -50,7 +52,12 @@ class GenerateJobs(object):
         else:
             print "Warning: There are not jobs in:"
             print repo
-            return
+            jobs = None
+            
+            if 'pipelines' in repo:
+                print "Warning: Pipeline in repo with no branches"
+            else:
+                return
 
         if 'location' in repo:
             repo_path = repo['location']
@@ -63,13 +70,17 @@ class GenerateJobs(object):
 
         self.add_branches_folder(repo_name)
 
-        all_branches = self.find_all_branches(repo_name)
+        all_branches = self.find_all_branches(repo_path, repo_name)
 
-        self.process_jobs(repo['jobs'], all_branches, repo_name)
+        if 'jobs' in repo:
+            self.process_jobs(repo['jobs'], all_branches, repo_name)
+
+        if 'pipelines' in repo:
+            self.process_pipelines(repo['pipelines'], all_branches, repo_name)
 
     def process_jobs(self, jobs, all_branches, repo_name):
         for job in jobs:
-            process_job(job, all_branches, repo_name)
+            self.process_job(job, all_branches, repo_name)
 
     def process_job(self, job, all_branches, repo_name):
         if 'location' in job:
@@ -116,27 +127,152 @@ class GenerateJobs(object):
             for branch in all_branches:
                 if branch in processed_branches:
                     continue
-                if re.search(branch_patter, branch) is not None:
-                    process_job_branch(branch, job_path, repo_name)
+                if re.search(branch_pattern, branch) is not None:
+                    self.process_job_branch(branch, job_path, repo_name)
                     processed_branches.append(branch)
 
     def process_job_branch(self, branch, job_path, repo_name):
-        self.parse_job_file_for_branch(self, branch, job_path, repo_name)
+        self.parse_job_file_for_branch(branch, job_path, repo_name)
 
         repo_branch = (repo_name, branch)
 
         if repo_branch not in self._branch_folders:
             self._branch_folders.append(repo_branch)
 
-    def find_all_branches(self, repo):
-        chdir('./' + repo)
-        # TODO: Fix this to go into the repo and get the branches.
-        for repo in self._configs['repositories'].keys():
-            repo_path = self._configs['repositories'][repo]['location']
-            repo_name = self.get_repo_name(repo_path)
-            self.clone_repo(repo_path)
-            self.get_branches_from_repository(repo_name)
-        chdir(self._root_dir)
+    def process_pipelines(self, pipelines, all_branches, repo_name):
+        for job in pipelines:
+            self.process_pipeline(job, all_branches, repo_name)
+    
+    def process_pipeline(self, pipeline, all_branches, repo_name):
+        if 'jenkinsfile' in pipeline and 'pipelinefile' in pipeline:
+            jenkinsfile_path = pipeline['jenkinsfile']
+            if jenkinsfile_path.startswith('./'):
+                jenkinsfile_path.replace(',/', '')
+            
+            pipelinefile_path = pipeline['pipelinefile']
+            if pipelinefile_path.startswith('./'):
+                pipelinefile_path.replace(',/', '')
+
+            if not isfile(jenkinsfile_path):
+                print "Warning: Invalid pipeline path: " + jenkinsfile_path
+                return
+            if not isfile(pipelinefile_path):
+                print "Warning: Invalid pipeline path: " + pipelinefile_path
+                return
+        else:
+            print "Warning: There is no path to the jenkinsfile and/or the pipelinefile:"
+            print pipeline
+            return
+
+        if 'name' in pipeline:
+            pipeline_name = pipeline['name'].replace('_', '-')
+        else:
+            pipeline_name = 'No-Name'
+            
+        if 'branches' in pipeline:
+            if 'all' in pipeline['branches']:
+                self.process_pipeline_branches(
+                        all_branches,
+                        pipelinefile_path,
+                        jenkinsfile_path,
+                        all_branches,
+                        repo_name,
+                        pipeline_name,
+                    )
+            else:
+                self.process_pipeline_branches(
+                        pipeline['branches'],
+                        pipelinefile_path,
+                        jenkinsfile_path,
+                        all_branches,
+                        repo_name,
+                        pipeline_name,
+                    )
+        else:
+            self.process_pipeline_branches(
+                    all_branches,
+                    pipelinefile_path,
+                    jenkinsfile_path,
+                    all_branches,
+                    repo_name,
+                    pipeline_name,
+                )
+
+    def process_pipeline_branches(
+                self, branches,
+                pipelinefile_path,
+                jenkinsfile_path,
+                all_branches,
+                repo_name,
+                pipeline_name
+            ):
+        processed_branches = []
+
+        for branch_pattern in branches:
+            for branch in all_branches:
+                if branch in processed_branches:
+                    continue
+                if re.search(branch_pattern, branch) is not None:
+                    self.process_pipeline_branch(
+                            branch,
+                            pipelinefile_path,
+                            jenkinsfile_path,
+                            repo_name,
+                            pipeline_name,
+                        )
+                    processed_branches.append(branch)
+
+    def process_pipeline_branch(
+                self,
+                branch,
+                pipelinefile_path,
+                jenkinsfile_path,
+                repo_name,
+                pipeline_name
+            ):
+        pipeline_content = self.parse_pipeline_file_for_branch(
+                                branch,
+                                pipelinefile_path,
+                                jenkinsfile_path,
+                                repo_name
+                            )
+
+        repo_branch = (repo_name, branch)
+
+        if repo_branch not in self._branch_folders:
+            self._branch_folders.append(repo_branch)
+
+        self.create_pipeline_job_directory(branch, repo_name, pipeline_name)
+        self.add_pipeline_config_file(branch, repo_name, pipeline_name, pipeline_content)
+
+    def create_pipeline_job_directory(self, branch, repo_name, pipeline_name):
+        path_jenkins = self._jenkins_location + '/'
+        path_repo = path_jenkins + repo_name + '/jobs/'
+        path_branch = path_jenkins + branch + '/jobs/'
+        path_job = path_jenkins + pipeline_name
+
+        if not isdir(path_repo):
+            mkdir(path_repo)
+
+        if not isdir(path_branch):
+            mkdir(path_branch)
+
+        if not isdir(path_job):
+            mkdir(path_job)
+
+    def add_pipeline_config_file(self, branch, repo_name, pipeline_name, pipeline_content):
+        path_jenkins = self._jenkins_location + '/'
+        path_repo = path_jenkins + repo_name + '/jobs/'
+        path_branch = path_jenkins + branch + '/jobs/'
+        path_job = path_jenkins + pipeline_name
+        path_config = path_job = '/config.xml'
+
+        with open(path_config, 'w') as file_handle:
+            file_handle.write(pipeline_content)
+
+    def find_all_branches(self, repo_path, repo_name):
+        self.clone_repo(repo_path)
+        return self.get_branches_from_repository(repo_name)
 
     def get_repo_name(self, repo_path):
         repo_path_pieces = repo_path.split('/')
@@ -150,8 +286,11 @@ class GenerateJobs(object):
         except:
             pass
 
-    def get_branches_from_repository(self, repo):
-        chdir('./' + repo)
+    def get_branches_from_repository(self, repo_name):
+        chdir('./' + repo_name)
+
+        branch_list = []
+
         branches = subprocess.check_output(['git', 'branch', '-a']).split("\n")
         for branch in branches:
             clean_branch = re.sub(r'^\s*\**\s*', "", branch).strip()
@@ -160,19 +299,21 @@ class GenerateJobs(object):
                 clean_branch not in self._branches and
                 ' -> ' not in clean_branch
                 ):
-                self._branches.append(clean_branch)
+                branch_list.append(clean_branch)
 
         if self._debugging > 0:
             print "========== Branches ================"
-            print self._branches
+            print branch_list
 
-        for branch in self._branches:
+        for branch in branch_list:
             self.checkout_branch(branch)
-            self.add_branch_folder(branch)
+            self.add_branch_folder(repo_name, branch)
 
         self.checkout_branch('master')
-
+        
         chdir(self._root_dir)
+
+        return branch_list
 
     def parse_job_file_for_branch(self, branch, job_path, repo_name):
         location = job_path
@@ -196,16 +337,39 @@ class GenerateJobs(object):
 
             self.add_dsl_content(dsl_content)
 
+    def parse_pipeline_file_for_branch(
+                self,
+                branch,
+                pipelinefile_path,
+                jenkinsfile_path,
+                repo_name
+            ):
+        location = pipelinefile_path
+
+        with open(location, 'r') as file_handle:
+            pipeline_file = file_handle.readlines()
+            pipeline_content = ''
+
+            for line in pipeline_file:
+                pipeline_content += self.parse_line(
+                                        line, 
+                                        branch, 
+                                        repo_name, 
+                                        pipelinefile_path,
+                                    )
+
+        return pipeline_content
+
     def parse_header(self, line):
         return 1
 
-    def parse_line(self, newline, branch, repo_name):
+    def parse_line(self, newline, branch, repo_name, pipelinefile_path = None):
         for repository in self._configs['repositories'].keys():
             flag = '{{' + repository.upper() + '}}'
-            value = "'" + self._configs['repositories'][repository] + "'"
+            value = "'" + self._configs['repositories'][repository]['location'] + "'"
             newline = newline.replace(flag, value)
 
-        for replacer in self._configs['job_replacements'].keys():
+        for replacer in self._configs['job_replacements']:
             flag = replacer['replace']
             value = replacer['with']
             newline = newline.replace(flag, value)
@@ -216,6 +380,9 @@ class GenerateJobs(object):
             newline = newline.replace('{{BRANCH}}', branch)
     
         newline = newline.replace('{{REPO}}', repo_name)
+
+        if pipelinefile_path is not None:
+            newline = newline.replace('{{JENKINSFILE}}', pipelinefile_path)
 
         return newline
 
