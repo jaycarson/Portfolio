@@ -1,3 +1,4 @@
 dsl.groovy
 *.retry
 secrets.yml
+*.swp

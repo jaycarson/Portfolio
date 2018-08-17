@@ -246,7 +246,7 @@ class GenerateJobs(object):
         self.add_pipeline_config_file(branch, repo_name, pipeline_name, pipeline_content)
 
     def create_pipeline_job_directory(self, branch, repo_name, pipeline_name):
-        path_jenkins = self._jenkins_location + '/'
+        path_jenkins = self._jenkins_location + '/jobs/'
         path_repo = path_jenkins + repo_name + '/jobs/'
         path_branch = path_jenkins + branch + '/jobs/'
         path_job = path_jenkins + pipeline_name
