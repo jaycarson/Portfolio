@@ -249,7 +249,7 @@ class GenerateJobs(object):
         path_job = join(
                         self._jenkins_location, 'jobs',
                         repo_name, 'jobs',
-                        branch, 'jobs',
+                        branch.lower(), 'jobs',
                         pipeline_name,
                     )
 
@@ -260,7 +260,7 @@ class GenerateJobs(object):
         path_to_config = join(
                         self._jenkins_location, 'jobs',
                         repo_name, 'jobs',
-                        branch, 'jobs',
+                        branch.lower(), 'jobs',
                         pipeline_name,
                     )
 
@@ -322,9 +322,9 @@ class GenerateJobs(object):
 
     def parse_job_file_for_branch(self, branch, job_path, repo_name):
         if self._debugging > 2:
-            print "parse_job_file_for_branch: branch: " + branch
-            print "parse_job_file_for_branch: job_path: " + job_path
-            print "parse_job_file_for_branch: repo_name: " + repo_name
+            print "        parse_job_file_for_branch: branch: " + branch
+            print "        parse_job_file_for_branch: job_path: " + job_path
+            print "        parse_job_file_for_branch: repo_name: " + repo_name
 
         location = job_path
         header_flag = False
@@ -355,10 +355,10 @@ class GenerateJobs(object):
                 repo_name
             ):
         if self._debugging > 2:
-            print "parse_pipeline_file_for_branch: branch: " + branch
-            print "parse_pipeline_file_for_branch: pipelinefile_path: " + pipelinefile_path
-            print "parse_pipeline_file_for_branch: jenkinsfile_path: " + jenkinsfile_path
-            print "parse_pipeline_file_for_branch: repo_name: " + repo_name
+            print "       parse_pipeline_file_for_branch: branch: " + branch
+            print "       parse_pipeline_file_for_branch: pipelinefile_path: " + pipelinefile_path
+            print "       parse_pipeline_file_for_branch: jenkinsfile_path: " + jenkinsfile_path
+            print "       parse_pipeline_file_for_branch: repo_name: " + repo_name
 
         location = pipelinefile_path
 
@@ -397,6 +397,9 @@ class GenerateJobs(object):
     
         newline = newline.replace('{{REPO}}', repo_name)
 
+        default_path = repo_name + '/' + branch.lower()
+        newline = newline.replace('{{DEFAULT_PATH}}', default_path)
+
         if pipelinefile_path is not None:
             newline = newline.replace('{{JENKINSFILE}}', pipelinefile_path)
 
@@ -404,7 +407,7 @@ class GenerateJobs(object):
 
     def add_branches_folder(self, repo_name):
         if self._debugging > 2:
-            print "add_branches_folder: repo: " + repo_name
+            print "       add_branches_folder: repo: " + repo_name
 
         dsl_content_repo = (
             "folder('" + repo_name + "') {\n"
@@ -424,8 +427,8 @@ class GenerateJobs(object):
 
     def add_branch_folder(self, repo_name, branch):
         if self._debugging > 2:
-            print "add_branch_folder: repo: " + repo_name
-            print "add_branch_folder: branch: " + branch
+            print "        add_branch_folder: repo: " + repo_name
+            print "        add_branch_folder: branch: " + branch
 
         branch = branch.replace('/', '-')
         location = "branch " + branch + " in the " + repo_name + " Repo"

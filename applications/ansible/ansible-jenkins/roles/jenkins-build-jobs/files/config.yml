@@ -24,12 +24,12 @@ repositories:
     jobs:
       - location: 'app/rsc/CI/jobs/test.job'
         branches:
-        - 'master'
-        - '^DEV'  # REGEX
+          - 'master'
+          - '^DEV'  # REGEX
     jenkins_config_jobs:
       - location: ''
         branches:
-        - 'master'
+          - 'master'
 job_replacements:
   - Description:
     replace: '{{Something}}'
