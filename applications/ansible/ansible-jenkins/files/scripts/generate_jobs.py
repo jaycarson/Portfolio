@@ -404,7 +404,7 @@ class GenerateJobs(object):
 
     def add_branches_folder(self, repo_name):
         if self._debugging > 2:
-            print "add_branches_folder: repo: " repo_name
+            print "add_branches_folder: repo: " + repo_name
 
         dsl_content_repo = (
             "folder('" + repo_name + "') {\n"
@@ -424,8 +424,8 @@ class GenerateJobs(object):
 
     def add_branch_folder(self, repo_name, branch):
         if self._debugging > 2:
-            print "add_branch_folder: repo: " repo_name
-            print "add_branch_folder: branch: " branch
+            print "add_branch_folder: repo: " + repo_name
+            print "add_branch_folder: branch: " + branch
 
         branch = branch.replace('/', '-')
         location = "branch " + branch + " in the " + repo_name + " Repo"
@@ -441,7 +441,7 @@ class GenerateJobs(object):
     def add_dsl_repo_content(self, content):
         self._dsl_repo_content += content + "\n"
 
-    def add_dsl_folder_content(self, content):
+    def add_dsl_folder_content(self, content):repo_nami
         self._dsl_folder_content += content + "\n"
 
     def add_dsl_content(self, content):
