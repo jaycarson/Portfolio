@@ -1,5 +1,5 @@
 Global:
-  debugging: 1
+  debugging: 3
   path_to_dsl: './applications/ansible/ansible-jenkins/files/scripts/dsl.groovy'
   path_jenkins: '/var/lib/jenkins'
 repositories:
@@ -25,7 +25,7 @@ repositories:
       - location: 'app/rsc/CI/jobs/test.job'
         branches:
         - 'master'
-          #- '^DEV'  # REGEX
+        - '^DEV'  # REGEX
     jenkins_config_jobs:
       - location: ''
         branches:

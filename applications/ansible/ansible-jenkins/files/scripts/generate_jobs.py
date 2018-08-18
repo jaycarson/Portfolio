@@ -307,6 +307,8 @@ class GenerateJobs(object):
         if self._debugging > 0:
             print "========== Branches ================"
             print branch_list
+            print "========== REPO:"
+            print "    " + repo_name
 
         for branch in branch_list:
             self.checkout_branch(branch)
@@ -319,6 +321,11 @@ class GenerateJobs(object):
         return branch_list
 
     def parse_job_file_for_branch(self, branch, job_path, repo_name):
+        if self._debugging > 2:
+            print "parse_job_file_for_branch: branch: " + branch
+            print "parse_job_file_for_branch: job_path: " + job_path
+            print "parse_job_file_for_branch: repo_name: " + repo_name
+
         location = job_path
         header_flag = False
 
@@ -347,6 +354,12 @@ class GenerateJobs(object):
                 jenkinsfile_path,
                 repo_name
             ):
+        if self._debugging > 2:
+            print "parse_pipeline_file_for_branch: branch: " + branch
+            print "parse_pipeline_file_for_branch: pipelinefile_path: " + pipelinefile_path
+            print "parse_pipeline_file_for_branch: jenkinsfile_path: " + jenkinsfile_path
+            print "parse_pipeline_file_for_branch: repo_name: " + repo_name
+
         location = pipelinefile_path
 
         with open(location, 'r') as file_handle:
@@ -390,6 +403,9 @@ class GenerateJobs(object):
         return newline
 
     def add_branches_folder(self, repo_name):
+        if self._debugging > 2:
+            print "add_branches_folder: repo: " repo_name
+
         dsl_content_repo = (
             "folder('" + repo_name + "') {\n"
             "    displayName('" + repo_name + "')\n"
@@ -407,6 +423,10 @@ class GenerateJobs(object):
         self.add_dsl_repo_content(dsl_content_repo + dsl_content_branches)
 
     def add_branch_folder(self, repo_name, branch):
+        if self._debugging > 2:
+            print "add_branch_folder: repo: " repo_name
+            print "add_branch_folder: branch: " branch
+
         branch = branch.replace('/', '-')
         location = "branch " + branch + " in the " + repo_name + " Repo"
         dsl_content = (
