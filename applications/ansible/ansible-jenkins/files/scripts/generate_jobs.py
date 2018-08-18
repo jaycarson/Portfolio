@@ -397,7 +397,7 @@ class GenerateJobs(object):
     
         newline = newline.replace('{{REPO}}', repo_name)
 
-        default_path = repo_name + '/' + branch.lower()
+        default_path = repo_name + '/branches/' + branch.lower()
         newline = newline.replace('{{DEFAULT_PATH}}', default_path)
 
         if pipelinefile_path is not None:
