@@ -247,10 +247,10 @@ class GenerateJobs(object):
 
     def create_pipeline_job_directory(self, branch, repo_name, pipeline_name):
         path_job = join(
-                        self._jenkins_location, 'jobs'
-                        repo_name, 'jobs'
-                        branch, 'jobs'
-                        pipeline_name
+                        self._jenkins_location, 'jobs',
+                        repo_name, 'jobs',
+                        branch, 'jobs',
+                        pipeline_name,
                     )
 
         mkdirs(path_job, exist_ok=True)
