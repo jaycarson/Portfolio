@@ -397,7 +397,7 @@ class GenerateJobs(object):
     
         newline = newline.replace('{{REPO}}', repo_name)
 
-        default_path = repo_name + '/branches/' + branch.lower()
+        default_path = repo_name + '/' + branch.lower()
         newline = newline.replace('{{DEFAULT_PATH}}', default_path)
 
         if pipelinefile_path is not None:
@@ -416,14 +416,7 @@ class GenerateJobs(object):
             "}\n"
         )
 
-        dsl_content_branches = (
-            "folder('" + repo_name + "/branches') {\n"
-            "    displayName('" + repo_name + " Branches')\n"
-            "    description('Folder for branch all of the branches')\n"
-            "}\n"
-        )
-
-        self.add_dsl_repo_content(dsl_content_repo + dsl_content_branches)
+        self.add_dsl_repo_content(dsl_content_repo)
 
     def add_branch_folder(self, repo_name, branch):
         if self._debugging > 2:
@@ -433,7 +426,7 @@ class GenerateJobs(object):
         branch = branch.replace('/', '-')
         location = "branch " + branch + " in the " + repo_name + " Repo"
         dsl_content = (
-            "folder('" + repo_name + "/branches/" + branch.lower() + "') {\n"
+            "folder('" + repo_name + '/' + branch.lower() + "') {\n"
             "    displayName('" + branch + "')\n"
             "    description('Folder for " + location + ".')\n"
             "}\n"
