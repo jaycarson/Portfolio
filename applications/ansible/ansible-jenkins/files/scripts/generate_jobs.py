@@ -257,11 +257,18 @@ class GenerateJobs(object):
             makedirs(path_job)
 
     def add_pipeline_config_file(self, branch, repo_name, pipeline_name, pipeline_content):
-        path_jenkins = self._jenkins_location + '/'
-        path_repo = path_jenkins + repo_name + '/jobs/'
-        path_branch = path_jenkins + branch + '/jobs/'
-        path_job = path_jenkins + pipeline_name
-        path_config = path_job = '/config.xml'
+        path_to_config = join(
+                        self._jenkins_location,
+                        repo_name, 'jobs',
+                        branch, 'jobs',
+                        pipeline_name,
+                    )
+
+        path_with_config = join(path_to_config, 'config.xml')
+
+        if not isdir(path_to_config):
+            print "Invalid Path: " + path_to_config
+            return
 
         with open(path_config, 'w') as file_handle:
             file_handle.write(pipeline_content)
