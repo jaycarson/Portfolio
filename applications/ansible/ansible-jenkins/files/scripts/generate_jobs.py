@@ -194,6 +194,11 @@ class GenerateJobs(object):
         else:
             pipeline_name = 'No-Name'
             
+        if 'replacements' in pipeline:
+            replacements = job['replacements']
+        else:
+            replacements = None
+
         if 'branches' in pipeline:
             if 'all' in pipeline['branches']:
                 self.process_pipeline_branches(
@@ -203,6 +208,7 @@ class GenerateJobs(object):
                         all_branches,
                         repo_name,
                         pipeline_name,
+                        replacements,
                     )
             else:
                 self.process_pipeline_branches(
@@ -212,6 +218,7 @@ class GenerateJobs(object):
                         all_branches,
                         repo_name,
                         pipeline_name,
+                        replacements,
                     )
         else:
             self.process_pipeline_branches(
@@ -221,6 +228,7 @@ class GenerateJobs(object):
                     all_branches,
                     repo_name,
                     pipeline_name,
+                    replacements,
                 )
 
     def process_pipeline_branches(
@@ -230,6 +238,7 @@ class GenerateJobs(object):
                 all_branches,
                 repo_name,
                 pipeline_name
+                replacements,
             ):
         processed_branches = []
 
@@ -244,6 +253,7 @@ class GenerateJobs(object):
                             jenkinsfile_path,
                             repo_name,
                             pipeline_name,
+                            replacements,
                         )
                     processed_branches.append(branch)
 
@@ -253,13 +263,15 @@ class GenerateJobs(object):
                 pipelinefile_path,
                 jenkinsfile_path,
                 repo_name,
-                pipeline_name
+                pipeline_name,
+                replacements,
             ):
         pipeline_content = self.parse_pipeline_file_for_branch(
                                 branch,
                                 pipelinefile_path,
                                 jenkinsfile_path,
-                                repo_name
+                                repo_name,
+                                replacements,
                             )
 
         repo_branch = (repo_name, branch)
@@ -388,6 +400,7 @@ class GenerateJobs(object):
                 branch,
                 pipelinefile_path,
                 jenkinsfile_path,
+                repo_name,
                 replacements,
             ):
         if self._debugging > 2:
@@ -407,6 +420,7 @@ class GenerateJobs(object):
                                         line, 
                                         branch, 
                                         repo_name, 
+                                        replacements,
                                         replacements,
                                         pipelinefile_path,
                                     )
