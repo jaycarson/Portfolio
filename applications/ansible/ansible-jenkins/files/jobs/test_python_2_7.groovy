@@ -2,7 +2,7 @@ job('{{DEFAULT_PATH}}/test-python-2-7') {
     scm {
         git {
             remote {
-                url({{Portfolio}})
+                url({{PORTFOLIO}})
             }
         branch('{{BRANCH}}')
         }
