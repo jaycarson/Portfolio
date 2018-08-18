@@ -3,7 +3,7 @@ Global:
   path_to_dsl: './applications/ansible/ansible-jenkins/files/scripts/dsl.groovy'
   path_jenkins: '/var/lib/jenkins'
 repositories:
-  jenkins_config:
+  Portfolio:
     location: 'https://github.com/jaycarson/Portfolio.git'
     jobs:
       - location: './applications/ansible/ansible-jenkins/files/jobs/test_python_2_7.groovy'
@@ -19,7 +19,7 @@ repositories:
         name: 'test-pipeline'
         branches:
           - 'master'
-  code:
+  fun:
     location: 'https://github.com/jaycarson/fun.git'
     jobs:
       - location: 'app/rsc/CI/jobs/test.job'
@@ -30,7 +30,7 @@ repositories:
       - location: ''
         branches:
           - 'master'
-job_replacements:
+replacements:
   - Description:
     replace: '{{Something}}'
     with: 'Something Else'

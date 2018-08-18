@@ -96,6 +96,11 @@ class GenerateJobs(object):
             print "Warning: There is no path to the job:"
             print job
             return
+        
+        if 'replacements' in job:
+            replacements = job['replacements']
+        else:
+            replacements = None
 
         if 'branches' in job:
             if 'all' in job['branches']:
@@ -104,6 +109,7 @@ class GenerateJobs(object):
                         job_path,
                         all_branches,
                         repo_name,
+                        replacements,
                     )
             else:
                 self.process_job_branches(
@@ -111,6 +117,7 @@ class GenerateJobs(object):
                         job_path,
                         all_branches,
                         repo_name,
+                        replacements,
                     )
         else:
             self.process_job_branches(
@@ -118,9 +125,17 @@ class GenerateJobs(object):
                     job_path,
                     all_branches,
                     repo_name,
+                    replacements,
                 )
 
-    def process_job_branches(self, branches, job_path, all_branches, repo_name):
+    def process_job_branches(
+                self,
+                branches,
+                job_path,
+                all_branches,
+                repo_name,
+                replacements,
+            ):
         processed_branches = []
 
         for branch_pattern in branches:
@@ -128,11 +143,21 @@ class GenerateJobs(object):
                 if branch in processed_branches:
                     continue
                 if re.search(branch_pattern, branch) is not None:
-                    self.process_job_branch(branch, job_path, repo_name)
+                    self.process_job_branch(
+                                branch, 
+                                job_path, 
+                                repo_name,
+                                replacements,
+                            )
                     processed_branches.append(branch)
 
-    def process_job_branch(self, branch, job_path, repo_name):
-        self.parse_job_file_for_branch(branch, job_path, repo_name)
+    def process_job_branch(self, branch, job_path, repo_name, replacements):
+        self.parse_job_file_for_branch(
+                branch, 
+                job_path, 
+                repo_name, 
+                replacements,
+            )
 
         repo_branch = (repo_name, branch)
 
@@ -320,7 +345,13 @@ class GenerateJobs(object):
 
         return branch_list
 
-    def parse_job_file_for_branch(self, branch, job_path, repo_name):
+    def parse_job_file_for_branch(
+                self, 
+                branch, 
+                job_path, 
+                repo_name, 
+                replacements,
+            ):
         if self._debugging > 2:
             print "        parse_job_file_for_branch: branch: " + branch
             print "        parse_job_file_for_branch: job_path: " + job_path
@@ -343,7 +374,12 @@ class GenerateJobs(object):
                 if header_flag:
                     self.parse_header_line(line)
                 else:
-                    dsl_content += self.parse_line(line, branch, repo_name)
+                    dsl_content += self.parse_line(
+                            line, 
+                            branch, 
+                            repo_name, 
+                            replacements,
+                        )
 
             self.add_dsl_content(dsl_content)
 
@@ -352,7 +388,7 @@ class GenerateJobs(object):
                 branch,
                 pipelinefile_path,
                 jenkinsfile_path,
-                repo_name
+                replacements,
             ):
         if self._debugging > 2:
             print "       parse_pipeline_file_for_branch: branch: " + branch
@@ -371,6 +407,7 @@ class GenerateJobs(object):
                                         line, 
                                         branch, 
                                         repo_name, 
+                                        replacements,
                                         pipelinefile_path,
                                     )
 
@@ -379,15 +416,27 @@ class GenerateJobs(object):
     def parse_header(self, line):
         return 1
 
-    def parse_line(self, newline, branch, repo_name, pipelinefile_path = None):
+    def parse_line(
+                self,
+                newline,
+                branch,
+                repo_name,
+                replacements,
+                pipelinefile_path = None,
+            ):
         for repository in self._configs['repositories'].keys():
             flag = '{{' + repository.upper() + '}}'
             value = "'" + self._configs['repositories'][repository]['location'] + "'"
             newline = newline.replace(flag, value)
 
-        for replacer in self._configs['job_replacements']:
+        for replacer in self._configs['replacements']:
             flag = replacer['replace']
             value = replacer['with']
+            newline = newline.replace(flag, value)
+
+        for replacement in replacements:
+            flag = replacement['replace']
+            value = replacement['with']
             newline = newline.replace(flag, value)
 
         if newline.startswith('job('):
