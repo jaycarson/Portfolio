@@ -237,7 +237,7 @@ class GenerateJobs(object):
                 jenkinsfile_path,
                 all_branches,
                 repo_name,
-                pipeline_name
+                pipeline_name,
                 replacements,
             ):
         processed_branches = []
