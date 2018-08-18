@@ -270,7 +270,7 @@ class GenerateJobs(object):
             print "Invalid Path: " + path_to_config
             return
 
-        with open(path_config, 'w') as file_handle:
+        with open(path_with_config, 'w') as file_handle:
             file_handle.write(pipeline_content)
 
     def find_all_branches(self, repo_path, repo_name):
