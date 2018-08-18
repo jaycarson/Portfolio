@@ -258,7 +258,7 @@ class GenerateJobs(object):
 
     def add_pipeline_config_file(self, branch, repo_name, pipeline_name, pipeline_content):
         path_to_config = join(
-                        self._jenkins_location,
+                        self._jenkins_location, 'jobs',
                         repo_name, 'jobs',
                         branch, 'jobs',
                         pipeline_name,
