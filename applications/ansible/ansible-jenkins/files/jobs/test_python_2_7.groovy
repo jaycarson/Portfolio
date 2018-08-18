@@ -1,4 +1,4 @@
-job('{{REPO}}/branches/{{BRANCH}}/test-python-2-7') {
+job('{{DEFAULT_PATH}}/test-python-2-7') {
     scm {
         git {
             remote {
