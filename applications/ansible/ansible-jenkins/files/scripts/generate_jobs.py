@@ -253,7 +253,7 @@ class GenerateJobs(object):
                         pipeline_name,
                     )
 
-        mkdirs(path_job, exist_ok=True)
+        makedirs(path_job, exist_ok=True)
 
     def add_pipeline_config_file(self, branch, repo_name, pipeline_name, pipeline_content):
         path_jenkins = self._jenkins_location + '/'
