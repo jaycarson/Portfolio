@@ -441,7 +441,7 @@ class GenerateJobs(object):
     def add_dsl_repo_content(self, content):
         self._dsl_repo_content += content + "\n"
 
-    def add_dsl_folder_content(self, content):repo_nami
+    def add_dsl_folder_content(self, content):
         self._dsl_folder_content += content + "\n"
 
     def add_dsl_content(self, content):
