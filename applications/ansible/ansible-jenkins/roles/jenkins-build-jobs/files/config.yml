@@ -22,7 +22,7 @@ repositories:
   code:
     location: 'https://github.com/jaycarson/fun.git'
     jobs:
-      - location: ''
+      - location: 'app/rsc/CI/jobs/test.job'
         branches:
         - 'master'
         - '^DEV'  # REGEX
