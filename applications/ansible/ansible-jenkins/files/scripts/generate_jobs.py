@@ -4,7 +4,7 @@ import argparse
 import subprocess
 import re
 import yaml
-from os import listdir, chdir, getcwd, mkdir
+from os import listdir, chdir, getcwd, mkdirs
 from os.path import isfile, join, isdir
 
 
