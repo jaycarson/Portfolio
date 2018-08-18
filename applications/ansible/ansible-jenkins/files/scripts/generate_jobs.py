@@ -390,14 +390,21 @@ class GenerateJobs(object):
         return newline
 
     def add_branches_folder(self, repo_name):
-        dsl_content = (
+        dsl_content_repo = (
+            "folder('" + repo_name + "') {\n"
+            "    displayName('" + repo_name + "')\n"
+            "    description('Folder for branch the repo')\n"
+            "}\n"
+        )
+
+        dsl_content_branches = (
             "folder('" + repo_name + "/branches') {\n"
             "    displayName('" + repo_name + " Branches')\n"
             "    description('Folder for branch all of the branches')\n"
             "}\n"
         )
 
-        self.add_dsl_repo_content(dsl_content)
+        self.add_dsl_repo_content(dsl_content_repo + dsl_content_branches)
 
     def add_branch_folder(self, repo_name, branch):
         branch = branch.replace('/', '-')
