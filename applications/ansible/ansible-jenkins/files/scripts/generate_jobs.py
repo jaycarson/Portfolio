@@ -4,7 +4,7 @@ import argparse
 import subprocess
 import re
 import yaml
-from os import listdir, chdir, getcwd, mkdirs
+from os import listdir, chdir, getcwd, makedirs
 from os.path import isfile, join, isdir
 
 
@@ -246,13 +246,14 @@ class GenerateJobs(object):
         self.add_pipeline_config_file(branch, repo_name, pipeline_name, pipeline_content)
 
     def create_pipeline_job_directory(self, branch, repo_name, pipeline_name):
-        path_jenkins = self._jenkins_location + '/jobs/'
-        path_repo = path_jenkins + repo_name + '/jobs/'
-        path_branch = path_jenkins + branch + '/jobs/'
-        path_job = path_jenkins + pipeline_name
+        path_job = join(
+                        self._jenkins_location, 'jobs'
+                        repo_name, 'jobs'
+                        branch, 'jobs'
+                        pipeline_name
+                    )
 
-        if not isdir(path_job):
-            mkdirs(path_job)
+        mkdirs(path_job, exist_ok=True)
 
     def add_pipeline_config_file(self, branch, repo_name, pipeline_name, pipeline_content):
         path_jenkins = self._jenkins_location + '/'
