@@ -434,10 +434,11 @@ class GenerateJobs(object):
             value = replacer['with']
             newline = newline.replace(flag, value)
 
-        for replacement in replacements:
-            flag = replacement['replace']
-            value = replacement['with']
-            newline = newline.replace(flag, value)
+        if replacements is not None:
+            for replacement in replacements:
+                flag = replacement['replace']
+                value = replacement['with']
+                newline = newline.replace(flag, value)
 
         if newline.startswith('job('):
             newline = newline.replace('{{BRANCH}}', branch.replace('/', '-'))
