@@ -311,7 +311,7 @@ class GenerateJobs(object):
             file_handle.write(pipeline_content)
 
     def find_all_branches(self, repo_path, repo_name):
-        self.clone_repo(repo_path)
+        self.clone_repo(repo_path, repo_name)
         return self.get_branches_from_repository(repo_name)
 
     def get_repo_name(self, repo_path):
@@ -319,12 +319,18 @@ class GenerateJobs(object):
         repo_name = repo_path_pieces[-1]
         return repo_name.split('.')[0]
 
-    def clone_repo(self, repo):
+    def clone_repo(self, repo, repo_name=None):
         try:
             output = subprocess.check_output(['git', 'clone', repo])
             print output
         except:
-            pass
+            if isdir('./' + repo_name):
+                chdir('./' + repo_name)
+                
+                output = subprocess.check_output(['git', 'pull'])
+                print output
+                
+                chdir(self._root_dir)
 
     def get_branches_from_repository(self, repo_name):
         chdir('./' + repo_name)
