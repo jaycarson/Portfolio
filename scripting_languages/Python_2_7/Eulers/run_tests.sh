@@ -2,9 +2,9 @@
 
 bash code_check.sh
 
-python -m xmlrunner test || true
+python -m xmlrunner euler_tests.py || true
 
-coverage run euler.tests || true
+coverage run euler_tests.py || true
 coverage xml
 
 rm *.pyc
