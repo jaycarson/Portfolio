@@ -66,8 +66,6 @@ class GenerateJobs(object):
 
         repo_name = self.get_repo_name(repo_path)
 
-        self.clone_repo(repo_path)
-
         self.add_branches_folder(repo_name)
 
         all_branches = self.find_all_branches(repo_path, repo_name)
