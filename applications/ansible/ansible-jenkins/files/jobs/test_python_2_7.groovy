@@ -22,7 +22,7 @@ job('{{DEFAULT_PATH}}/test-python-2-7') {
         shell('cd ./{{PATH}}; pycodestyle --first Euler009.py')
         shell('cd ./{{PATH}}; pycodestyle --first Euler010.py')
         shell('cd ./{{PATH}}; pycodestyle --first euler_tests.py')
-        shell('cd ./{{PATH}}; python -m xmlrunner euler_tests.py || true')
+        shell('cd ./{{PATH}}; python -m xmlrunner euler_tests || true')
         shell('cd ./{{PATH}}; coverage run euler_tests.py || true')
         shell('cd ./{{PATH}}; coverage xml')
         shell('cd ./{{PATH}}; rm *.pyc')
