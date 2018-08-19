@@ -11,7 +11,21 @@ job('{{DEFAULT_PATH}}/test-python-2-7') {
         scm('*/15 * * * *')
     }
     steps{
-        shell('cd ./{{PATH}}; ./run_tests.sh')
+        shell('cd ./{{PATH}}; pycodestyle --first Euler001.py')
+        shell('cd ./{{PATH}}; pycodestyle --first Euler002.py')
+        shell('cd ./{{PATH}}; pycodestyle --first Euler003.py')
+        shell('cd ./{{PATH}}; pycodestyle --first Euler004.py')
+        shell('cd ./{{PATH}}; pycodestyle --first Euler005.py')
+        shell('cd ./{{PATH}}; pycodestyle --first Euler006.py')
+        shell('cd ./{{PATH}}; pycodestyle --first Euler007.py')
+        shell('cd ./{{PATH}}; pycodestyle --first Euler008.py')
+        shell('cd ./{{PATH}}; pycodestyle --first Euler009.py')
+        shell('cd ./{{PATH}}; pycodestyle --first Euler010.py')
+        shell('cd ./{{PATH}}; pycodestyle --first euler.tests')
+        shell('cd ./{{PATH}}; python -m xmlrunnertest || true')
+        shell('cd ./{{PATH}}; coverage run euler.tsts || true')
+        shell('cd ./{{PATH}}; coverage xml')
+        shell('cd ./{{PATH}}; rm *.pyc')
     }
     publishers{
         cobertura('**/{{PATH}}/coverage.xml'){
