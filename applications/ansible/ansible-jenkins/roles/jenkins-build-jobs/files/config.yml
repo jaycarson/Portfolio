@@ -40,7 +40,7 @@ repositories:
               with: 'base'
             - Description: 'Path to everything'
               replace: '{{PATH}}'
-              with: 'app/rsc/rsc/MapGeneration'
+              with: 'app/rsc/MapGeneration'
             - Description: 'The script to be executed'
               replace: '{{SCRIPT}}'
               with: 'MapGenBase.py'
