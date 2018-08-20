@@ -33,16 +33,16 @@ repositories:
           - '^DEV'  # REGEX
         replacements:
             - Description: 'Artifact Repository'
-              repalce: '{{ARTIFACT_REPO_PATH}}'
+              replace: '{{ARTIFACT_REPO_PATH}}'
               with: '/tmp/artifact_repo/game_maps/'
             - Description: 'Map Type'
-              repalce: '{{MAP_TYPE}}'
+              replace: '{{MAP_TYPE}}'
               with: 'base'
             - Description: 'Path to everything'
-              repalce: '{{PATH}}'
+              replace: '{{PATH}}'
               with: 'app/rsc/rsc/MapGeneration'
             - Description: 'The script to be executed'
-              repalce: '{{SCRIPT}}'
+              replace: '{{SCRIPT}}'
               with: 'MapGenBase.py'
     jenkins_config_jobs:
       - location: ''
