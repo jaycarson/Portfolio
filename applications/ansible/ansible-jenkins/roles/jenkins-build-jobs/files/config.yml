@@ -9,10 +9,8 @@ repositories:
       - location: './applications/ansible/ansible-jenkins/files/jobs/test_python_2_7.groovy'
         branches:
           - 'master'
-        replacements:
-          - Description: 'Root Path'
-            replace: '{{PATH}}'
-            with: 'scripting_languages/Python_2_7/Eulers'
+        variables:
+          PATH: 'scripting_languages/Python_2_7/Eulers'
     pipelines:
       - pipelinefile: './applications/ansible/ansible-jenkins/files/pipelines/example/config.xml'
         jenkinsfile: './applications/ansible/ansible-jenkins/files/pipelines/example/Jenkinsfile'
@@ -31,24 +29,65 @@ repositories:
         branches:
           - 'master'
           - '^DEV'  # REGEX
-        replacements:
-            - Description: 'Artifact Repository'
-              replace: '{{ARTIFACT_REPO_PATH}}'
-              with: '/tmp/artifact_repo/game_maps/'
-            - Description: 'Map Type'
-              replace: '{{MAP_TYPE}}'
-              with: 'base'
-            - Description: 'Path to everything'
-              replace: '{{PATH}}'
-              with: 'app/rsc/MapGeneration'
-            - Description: 'The script to be executed'
-              replace: '{{SCRIPT}}'
-              with: 'MapGenBase.py'
+        variables:
+          ARTIFACT_REPO_PATH: '/tmp/artifact_repo/game_maps/'
+          MAP_TYPE: 'base'
+          SOURCE_MAP_TYPE: 'noise'
+          PATH: 'app/rsc/MapGeneration'
+          SCRIPT: 'MapGenBase.py'
+      - location: 'app/rsc/CI/jobs/generate_maps.groovy'
+        branches:
+          - 'master'
+          - '^DEV'  # REGEX
+        variables:
+          ARTIFACT_REPO_PATH: '/tmp/artifact_repo/game_maps/'
+          MAP_TYPE: 'feature'
+          SOURCE_MAP_TYPE: 'base'
+          PATH: 'app/rsc/MapGeneration'
+          SCRIPT: 'MapGenFeature.py'
+      - location: 'app/rsc/CI/jobs/generate_maps.groovy'
+        branches:
+          - 'master'
+          - '^DEV'  # REGEX
+        variables:
+          ARTIFACT_REPO_PATH: '/tmp/artifact_repo/game_maps/'
+          MAP_TYPE: 'feature'
+          SOURCE_MAP_TYPE: 'terrain'
+          PATH: 'app/rsc/MapGeneration'
+          SCRIPT: 'MapGenTerrain.py'
+      - location: 'app/rsc/CI/jobs/generate_maps.groovy'
+        branches:
+          - 'master'
+          - '^DEV'  # REGEX
+        variables:
+          ARTIFACT_REPO_PATH: '/tmp/artifact_repo/game_maps/'
+          MAP_TYPE: 'terrain'
+          SOURCE_MAP_TYPE: 'castle'
+          PATH: 'app/rsc/MapGeneration'
+          SCRIPT: 'MapGenCastle.py'
+      - location: 'app/rsc/CI/jobs/generate_maps.groovy'
+        branches:
+          - 'master'
+          - '^DEV'  # REGEX
+        variables:
+          ARTIFACT_REPO_PATH: '/tmp/artifact_repo/game_maps/'
+          MAP_TYPE: 'castle'
+          SOURCE_MAP_TYPE: 'farm'
+          PATH: 'app/rsc/MapGeneration'
+          SCRIPT: 'MapGenFarms.py'
+      - location: 'app/rsc/CI/jobs/generate_maps.groovy'
+        branches:
+          - 'master'
+          - '^DEV'  # REGEX
+        variables:
+          ARTIFACT_REPO_PATH: '/tmp/artifact_repo/game_maps/'
+          MAP_TYPE: 'farm'
+          SOURCE_MAP_TYPE: 'house'
+          PATH: 'app/rsc/MapGeneration'
+          SCRIPT: 'MapGenHouse.py'
     jenkins_config_jobs:
       - location: ''
         branches:
           - 'master'
-replacements:
-  - Description:
-    replace: '{{Something}}'
-    with: 'Something Else'
+variables:
+  SOMETHING: 'Something Else'

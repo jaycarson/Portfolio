@@ -33,7 +33,7 @@ class GenerateJobs(object):
         self._dsl_content = ''
         self._dsl_repo_content = ''
         self._dsl_folder_content = ''
-        
+
         self._jenkins_location = self._configs['Global']['path_jenkins']
 
     def __call__(self):
@@ -53,7 +53,7 @@ class GenerateJobs(object):
             print "Warning: There are not jobs in:"
             print repo
             jobs = None
-            
+
             if 'pipelines' in repo:
                 print "Warning: Pipeline in repo with no branches"
             else:
@@ -94,7 +94,7 @@ class GenerateJobs(object):
             print "Warning: There is no path to the job:"
             print job
             return
-        
+
         if 'replacements' in job:
             replacements = job['replacements']
         else:
@@ -142,8 +142,8 @@ class GenerateJobs(object):
                     continue
                 if re.search(branch_pattern, branch) is not None:
                     self.process_job_branch(
-                                branch, 
-                                job_path, 
+                                branch,
+                                job_path,
                                 repo_name,
                                 replacements,
                             )
@@ -151,9 +151,9 @@ class GenerateJobs(object):
 
     def process_job_branch(self, branch, job_path, repo_name, replacements):
         self.parse_job_file_for_branch(
-                branch, 
-                job_path, 
-                repo_name, 
+                branch,
+                job_path,
+                repo_name,
                 replacements,
             )
 
@@ -165,13 +165,13 @@ class GenerateJobs(object):
     def process_pipelines(self, pipelines, all_branches, repo_name):
         for job in pipelines:
             self.process_pipeline(job, all_branches, repo_name)
-    
+
     def process_pipeline(self, pipeline, all_branches, repo_name):
         if 'jenkinsfile' in pipeline and 'pipelinefile' in pipeline:
             jenkinsfile_path = pipeline['jenkinsfile']
             if jenkinsfile_path.startswith('./'):
                 jenkinsfile_path.replace(',/', '')
-            
+
             pipelinefile_path = pipeline['pipelinefile']
             if pipelinefile_path.startswith('./'):
                 pipelinefile_path.replace(',/', '')
@@ -191,9 +191,9 @@ class GenerateJobs(object):
             pipeline_name = pipeline['name'].replace('_', '-')
         else:
             pipeline_name = 'No-Name'
-            
-        if 'replacements' in pipeline:
-            replacements = job['replacements']
+
+        if 'variables' in pipeline:
+            replacements = job['variables']
         else:
             replacements = None
 
@@ -324,10 +324,10 @@ class GenerateJobs(object):
         except:
             if isdir('./' + repo_name):
                 chdir('./' + repo_name)
-                
+
                 output = subprocess.check_output(['git', 'pull'])
                 print output
-                
+
                 chdir(self._root_dir)
 
     def get_branches_from_repository(self, repo_name):
@@ -356,16 +356,16 @@ class GenerateJobs(object):
             self.add_branch_folder(repo_name, branch)
 
         self.checkout_branch('master')
-        
+
         chdir(self._root_dir)
 
         return branch_list
 
     def parse_job_file_for_branch(
-                self, 
-                branch, 
-                job_path, 
-                repo_name, 
+                self,
+                branch,
+                job_path,
+                repo_name,
                 replacements,
             ):
         if self._debugging > 2:
@@ -391,9 +391,9 @@ class GenerateJobs(object):
                     self.parse_header_line(line)
                 else:
                     dsl_content += self.parse_line(
-                            line, 
-                            branch, 
-                            repo_name, 
+                            line,
+                            branch,
+                            repo_name,
                             replacements,
                         )
 
@@ -421,10 +421,9 @@ class GenerateJobs(object):
 
             for line in pipeline_file:
                 pipeline_content += self.parse_line(
-                                        line, 
-                                        branch, 
-                                        repo_name, 
-                                        replacements,
+                                        line,
+                                        branch,
+                                        repo_name,
                                         replacements,
                                         pipelinefile_path,
                                     )
@@ -447,22 +446,22 @@ class GenerateJobs(object):
             value = "'" + self._configs['repositories'][repository]['location'] + "'"
             newline = newline.replace(flag, value)
 
-        for replacer in self._configs['replacements']:
-            flag = replacer['replace']
-            value = replacer['with']
+        for replacer in self._configs['variables'].keys():
+            flag = replacer
+            value = self._configs['variables'][replacer]
             newline = newline.replace(flag, value)
 
         if replacements is not None:
-            for replacement in replacements:
-                flag = replacement['replace']
-                value = replacement['with']
+            for replacement in replacements.keys():
+                flag = replacement
+                value = replacements[replacement]
                 newline = newline.replace(flag, value)
 
         if newline.startswith('job('):
             newline = newline.replace('{{BRANCH}}', branch.replace('/', '-'))
         else:
             newline = newline.replace('{{BRANCH}}', branch)
-    
+
         newline = newline.replace('{{REPO}}', repo_name)
 
         default_path = repo_name + '/' + branch.lower()
